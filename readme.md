@@ -1,6 +1,6 @@
 <p align="center"><img src="https://gh.kaos.io/bastion.svg"/></p>
 
-`bastion` is utility for temporary access limitation to server.
+**Bastion** is utility for temporary access limitation to server.
 
 ### Build Status
 
