@@ -1,0 +1,45 @@
+# Default configuration file for bastion service
+
+[main]
+
+  # Bastion mode duration in minutes (1 day by default)
+  duration: 86400
+
+  # If defined, used for unique link generation
+  url: 
+
+[server]
+
+  # HTTP server IP
+  ip: 
+
+  # HTTP server port
+  port:
+
+[log]
+
+  # Log file dir
+  dir: /var/log/bastion
+
+  # Path to log file
+  file: {log:dir}/bastion.log
+
+  # Log permissions
+  perms: 600
+
+  # Default log level (debug/info/warn/error/crit)
+  level: info
+
+[script]
+
+  # Script will be executed before enabling bastion mode
+  before:
+
+  # Script will be executed after enabling bastion mode
+  start:
+
+  # Script will be executed before bastion mode ending
+  end:
+
+  # Script will be executed after bastion mode ending
+  complete:
