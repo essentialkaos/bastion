@@ -1,4 +1,4 @@
-<p align="center"><img src="https://gh.kaos.io/bastion.svg"/></p>
+<p align="center"><a href="#readme"><img src="https://gh.kaos.io/bastion.svg"/></a></p>
 
 **Bastion** is utility for temporary access limitation to server.
 
