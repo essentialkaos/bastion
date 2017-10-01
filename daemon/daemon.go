@@ -10,12 +10,15 @@ package daemon
 import (
 	"os"
 	"runtime"
+	"strings"
 
 	"pkg.re/essentialkaos/ek.v9/fmtc"
 	"pkg.re/essentialkaos/ek.v9/fsutil"
 	"pkg.re/essentialkaos/ek.v9/knf"
 	"pkg.re/essentialkaos/ek.v9/log"
+	"pkg.re/essentialkaos/ek.v9/netutil"
 	"pkg.re/essentialkaos/ek.v9/options"
+	"pkg.re/essentialkaos/ek.v9/passwd"
 	"pkg.re/essentialkaos/ek.v9/pid"
 	"pkg.re/essentialkaos/ek.v9/signal"
 	"pkg.re/essentialkaos/ek.v9/usage"
@@ -35,8 +38,10 @@ const (
 const (
 	MAIN_DURATION   = "main:duration"
 	MAIN_URL        = "main:url"
+	MAIN_PATH       = "main:path"
 	SERVER_IP       = "server:ip"
 	SERVER_PORT     = "server:port"
+	SERVER_NAME     = "server:name"
 	LOG_DIR         = "log:dir"
 	LOG_FILE        = "log:file"
 	LOG_PERMS       = "log:perms"
@@ -67,6 +72,9 @@ var optMap = options.Map{
 	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
 	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
 }
+
+var key string
+var bastionPath string
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -103,7 +111,12 @@ func Init() {
 	registerSignalHandlers()
 	setupLogger()
 	createPidFile()
-	startServer()
+	generateKey()
+
+	startHTTPServer(
+		knf.GetS(SERVER_IP),
+		knf.GetS(SERVER_PORT),
+	)
 
 	shutdown(0)
 }
@@ -149,6 +162,9 @@ func validateConfig() {
 		{LOG_DIR, permsChecker, "DW"},
 		{LOG_DIR, permsChecker, "DX"},
 		{LOG_LEVEL, knf.NotContains, []string{"debug", "info", "warn", "error", "crit"}},
+
+		{MAIN_DURATION, knf.Less, 3600},
+		{MAIN_DURATION, knf.Greater, 604800},
 
 		{SCRIPT_BEFORE, permsChecker, "FS"},
 		{SCRIPT_BEFORE, permsChecker, "FX"},
@@ -204,8 +220,38 @@ func createPidFile() {
 	}
 }
 
-func startServer() {
+// generateKey generate and print random key
+func generateKey() {
+	key = passwd.GenPassword(32, passwd.STRENGTH_MEDIUM)
 
+	var link string
+
+	if knf.GetS(MAIN_URL) != "" {
+		link = knf.GetS(MAIN_URL)
+	} else {
+		if options.GetS(SERVER_IP) == "" {
+			link = "http://" + netutil.GetIP()
+		} else {
+			link = "http://" + options.GetS(SERVER_IP)
+		}
+
+		if options.GetS(SERVER_PORT) != "" && options.GetS(SERVER_PORT) != "80" {
+			link += ":" + options.GetS(SERVER_PORT)
+		}
+	}
+
+	if knf.GetS(MAIN_PATH) != "" {
+		link += "/" + knf.GetS(MAIN_PATH)
+		bastionPath = "/" + knf.GetS(MAIN_PATH)
+	}
+
+	link += "/" + key
+	link = strings.Replace(link, "//", "/", -1)
+
+	bastionPath += "/" + key
+	bastionPath = strings.Replace(bastionPath, "//", "/", -1)
+
+	fmtc.Printf("{*}Your unique link is:{!} %s\n", key)
 }
 
 // INT signal handler

@@ -6,15 +6,21 @@
   duration: 86400
 
   # If defined, used for unique link generation
-  url: 
+  url:
+
+  # If defined, will added to generated url
+  path:
 
 [server]
 
   # HTTP server IP
-  ip: 
+  ip:
 
   # HTTP server port
   port:
+
+  # Override server name
+  name:
 
 [log]
 
