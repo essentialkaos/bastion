@@ -42,10 +42,10 @@
   before:
 
   # Script will be executed after enabling bastion mode
-  start:
+  in:
 
   # Script will be executed before bastion mode ending
-  end:
+  out:
 
   # Script will be executed after bastion mode ending
-  complete:
+  end:

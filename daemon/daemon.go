@@ -36,20 +36,20 @@ const (
 
 // Daemon info
 const (
-	MAIN_DURATION   = "main:duration"
-	MAIN_URL        = "main:url"
-	MAIN_PATH       = "main:path"
-	SERVER_IP       = "server:ip"
-	SERVER_PORT     = "server:port"
-	SERVER_NAME     = "server:name"
-	LOG_DIR         = "log:dir"
-	LOG_FILE        = "log:file"
-	LOG_PERMS       = "log:perms"
-	LOG_LEVEL       = "log:level"
-	SCRIPT_BEFORE   = "script:before"
-	SCRIPT_START    = "script:start"
-	SCRIPT_END      = "script:end"
-	SCRIPT_COMPLETE = "script:complete"
+	MAIN_DURATION = "main:duration"
+	MAIN_URL      = "main:url"
+	MAIN_PATH     = "main:path"
+	SERVER_IP     = "server:ip"
+	SERVER_PORT   = "server:port"
+	SERVER_NAME   = "server:name"
+	LOG_DIR       = "log:dir"
+	LOG_FILE      = "log:file"
+	LOG_PERMS     = "log:perms"
+	LOG_LEVEL     = "log:level"
+	SCRIPT_BEFORE = "script:before"
+	SCRIPT_IN     = "script:in"
+	SCRIPT_OUT    = "script:out"
+	SCRIPT_END    = "script:complete"
 )
 
 // Options
@@ -168,12 +168,12 @@ func validateConfig() {
 
 		{SCRIPT_BEFORE, permsChecker, "FS"},
 		{SCRIPT_BEFORE, permsChecker, "FX"},
-		{SCRIPT_START, permsChecker, "FS"},
-		{SCRIPT_START, permsChecker, "FX"},
+		{SCRIPT_IN, permsChecker, "FS"},
+		{SCRIPT_IN, permsChecker, "FX"},
+		{SCRIPT_OUT, permsChecker, "FS"},
+		{SCRIPT_OUT, permsChecker, "FX"},
 		{SCRIPT_END, permsChecker, "FS"},
 		{SCRIPT_END, permsChecker, "FX"},
-		{SCRIPT_COMPLETE, permsChecker, "FS"},
-		{SCRIPT_COMPLETE, permsChecker, "FX"},
 	})
 
 	if len(errs) != 0 {

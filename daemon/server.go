@@ -41,7 +41,7 @@ func fastHTTPHandler(ctx *fasthttp.RequestCtx) {
 
 	if path == bastionPath && !bastionMode {
 		bastionMode = true
-		go enableBastionMode(knf.GetI64(MAIN_DURATION, 86400))
+		go startBastionMode()
 	}
 }
 
