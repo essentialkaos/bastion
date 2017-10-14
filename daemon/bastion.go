@@ -90,7 +90,7 @@ func enableBastionMode(duration int64) {
 
 	log.Info("Disabling sshd service...")
 
-	err = disableSSHDService()
+	err = disableService("sshd")
 
 	if err != nil {
 		log.Error(err.Error())
@@ -98,12 +98,24 @@ func enableBastionMode(duration int64) {
 		log.Info("sshd service disabled")
 	}
 
-	err = stopSSHDService()
+	log.Info("Stopping sshd service...")
+
+	err = stopService("sshd")
 
 	if err != nil {
 		log.Error(err.Error())
 	} else {
 		log.Info("sshd service stopped")
+	}
+
+	log.Info("Enabling bastion service...")
+
+	err = enableService("bastion")
+
+	if err != nil {
+		log.Error(err.Error())
+	} else {
+		log.Info("bastion service enabled")
 	}
 
 	if knf.HasProp(SCRIPT_IN) {
@@ -125,7 +137,7 @@ func disableBastionMode() {
 
 	log.Info("Enabling sshd service...")
 
-	err = enableSSHDService()
+	err = enableService("sshd")
 
 	if err != nil {
 		log.Error(err.Error())
@@ -135,12 +147,22 @@ func disableBastionMode() {
 
 	log.Info("Starting sshd service...")
 
-	err = startSSHDService()
+	err = startService("sshd")
 
 	if err != nil {
 		log.Error(err.Error())
 	} else {
 		log.Info("sshd service started")
+	}
+
+	log.Info("Disabling bastion service...")
+
+	err = disableService("bastion")
+
+	if err != nil {
+		log.Error(err.Error())
+	} else {
+		log.Info("bastion service disabled")
 	}
 
 	if knf.HasProp(SCRIPT_END) {
@@ -153,168 +175,168 @@ func disableBastionMode() {
 	shutdown(0)
 }
 
-// stopSSHDService stop sshd daemon
-func stopSSHDService() error {
+// enableService enable service autostart
+func enableService(name string) error {
 	if initsystem.Systemd() {
-		return stopSSHDServiceBySystemd()
+		return enableServiceBySystemd(name)
 	}
 
-	return stopSSHDServiceBySysV()
+	return enableServiceBySysV(name)
 }
 
-// stopSSHDService stop sshd daemon by systemd
-func stopSSHDServiceBySystemd() error {
-	err := exec.Command("systemctl", "stop", "sshd").Start()
-
-	if err != nil {
-		return fmt.Errorf("Can't stop sshd service through systemd")
-	}
-
-	if isServiceStopped("sshd") {
-		return nil
-	}
-
-	return fmt.Errorf("sshd service still works after 15 sec")
-}
-
-// stopSSHDService stop sshd daemon by sysv
-func stopSSHDServiceBySysV() error {
-	err := exec.Command("service", "sshd", "stop").Start()
-
-	if err != nil {
-		return fmt.Errorf("Can't stop sshd service through sysv")
-	}
-
-	if isServiceStopped("sshd") {
-		return nil
-	}
-
-	return fmt.Errorf("sshd service still works after 15 sec")
-}
-
-// disableSSHDService disable autostart for sshd daemon
-func disableSSHDService() error {
+// disableService disable service autostart
+func disableService(name string) error {
 	if initsystem.Systemd() {
-		return disableSSHDServiceBySystemd()
+		return disableServiceBySystemd(name)
 	}
 
-	return disableSSHDServiceBySysV()
+	return disableServiceBySysV(name)
 }
 
-// disableSSHDService disable autostart for sshd daemon by systemd
-func disableSSHDServiceBySystemd() error {
-	err := exec.Command("systemctl", "disable", "sshd").Start()
-
-	if err != nil {
-		return fmt.Errorf("Can't disable sshd service through systemd")
+// startService start service
+func startService(name string) error {
+	if initsystem.Systemd() {
+		return startServiceBySystemd(name)
 	}
 
-	enabled, err := initsystem.IsEnabled("sshd")
+	return startServiceBySysV(name)
+}
+
+// stopService stop service
+func stopService(name string) error {
+	if initsystem.Systemd() {
+		return stopServiceBySystemd(name)
+	}
+
+	return stopServiceBySysV(name)
+}
+
+// enableServiceBySysV enable service autostart by chkconfig
+func enableServiceBySysV(name string) error {
+	err := exec.Command("chkconfig", "--add", name).Start()
+
+	if err != nil {
+		return fmt.Errorf("Can't enable %s service through sysv", name)
+	}
+
+	enabled, err := initsystem.IsEnabled(name)
 
 	if err != nil || enabled {
-		return fmt.Errorf("Can't disable sshd service through systemd")
+		return fmt.Errorf("Can't enable %s service through sysv", name)
 	}
 
 	return nil
 }
 
-// disableSSHDService disable autostart for sshd daemon by sysv
-func disableSSHDServiceBySysV() error {
-	err := exec.Command("chkconfig", "--del", "sshd").Start()
+// enableServiceBySystemd enable service autostart by systemctl
+func enableServiceBySystemd(name string) error {
+	err := exec.Command("systemctl", "enable", name).Start()
 
 	if err != nil {
-		return fmt.Errorf("Can't disable sshd service through sysv")
+		return fmt.Errorf("Can't enable %s service through systemd", name)
 	}
 
-	enabled, err := initsystem.IsEnabled("sshd")
-
-	if err != nil || enabled {
-		return fmt.Errorf("Can't disable sshd service through sysv")
-	}
-
-	return nil
-}
-
-// stopSSHDService start sshd daemon
-func startSSHDService() error {
-	if initsystem.Systemd() {
-		return startSSHDServiceBySystemd()
-	}
-
-	return startSSHDServiceBySysV()
-}
-
-// stopSSHDService start sshd daemon
-func startSSHDServiceBySystemd() error {
-	err := exec.Command("systemctl", "start", "sshd").Start()
-
-	if err != nil {
-		return fmt.Errorf("Can't start sshd service through systemd")
-	}
-
-	if isServiceWorks("sshd") {
-		return nil
-	}
-
-	return fmt.Errorf("sshd service still stopped after 15 sec")
-}
-
-// stopSSHDService start sshd daemon
-func startSSHDServiceBySysV() error {
-	err := exec.Command("service", "sshd", "start").Start()
-
-	if err != nil {
-		return fmt.Errorf("Can't stop sshd service through sysv")
-	}
-
-	if isServiceWorks("sshd") {
-		return nil
-	}
-
-	return fmt.Errorf("sshd service still stopped after 15 sec")
-}
-
-// disableSSHDService enable autostart for sshd daemon
-func enableSSHDService() error {
-	if initsystem.Systemd() {
-		return enableSSHDServiceBySystemd()
-	}
-
-	return enableSSHDServiceBySysV()
-}
-
-// disableSSHDService enable autostart for sshd daemon
-func enableSSHDServiceBySystemd() error {
-	err := exec.Command("systemctl", "enable", "sshd").Start()
-
-	if err != nil {
-		return fmt.Errorf("Can't enable sshd service through systemd")
-	}
-
-	enabled, err := initsystem.IsEnabled("sshd")
+	enabled, err := initsystem.IsEnabled(name)
 
 	if err != nil || !enabled {
-		return fmt.Errorf("Can't enable sshd service through systemd")
+		return fmt.Errorf("Can't enable %s service through systemd", name)
 	}
 
 	return nil
 }
 
-// disableSSHDService enable autostart for sshd daemon
-func enableSSHDServiceBySysV() error {
-	err := exec.Command("chkconfig", "--add", "sshd").Start()
+// disableServiceBySysV disable service autostart by chkconfig
+func disableServiceBySysV(name string) error {
+	err := exec.Command("chkconfig", "--del", name).Start()
 
 	if err != nil {
-		return fmt.Errorf("Can't enable sshd service through sysv")
+		return fmt.Errorf("Can't disable %s service through sysv", name)
 	}
 
-	enabled, err := initsystem.IsEnabled("sshd")
+	enabled, err := initsystem.IsEnabled(name)
 
 	if err != nil || enabled {
-		return fmt.Errorf("Can't enable sshd service through sysv")
+		return fmt.Errorf("Can't disable %s service through sysv", name)
 	}
 
 	return nil
+}
+
+// disableServiceBySystemd disable service autostart by systemctl
+func disableServiceBySystemd(name string) error {
+	err := exec.Command("systemctl", "disable", name).Start()
+
+	if err != nil {
+		return fmt.Errorf("Can't disable %s service through systemd", name)
+	}
+
+	enabled, err := initsystem.IsEnabled(name)
+
+	if err != nil || enabled {
+		return fmt.Errorf("Can't disable %s service through systemd", name)
+	}
+
+	return nil
+}
+
+// startServiceBySysV start service by sysv init script
+func startServiceBySysV(name string) error {
+	err := exec.Command("service", name, "start").Start()
+
+	if err != nil {
+		return fmt.Errorf("Can't stop %s service through sysv", name)
+	}
+
+	if isServiceWorks(name) {
+		return nil
+	}
+
+	return fmt.Errorf("%s service still stopped after 15 sec", name)
+}
+
+// startServiceBySystemd start service by systemctl
+func startServiceBySystemd(name string) error {
+	err := exec.Command("systemctl", "start", name).Start()
+
+	if err != nil {
+		return fmt.Errorf("Can't start %s service through systemd", name)
+	}
+
+	if isServiceWorks(name) {
+		return nil
+	}
+
+	return fmt.Errorf("%s service still stopped after 15 sec", name)
+}
+
+// stopServiceBySysV stop service by sysv init script
+func stopServiceBySysV(name string) error {
+	err := exec.Command("service", name, "stop").Start()
+
+	if err != nil {
+		return fmt.Errorf("Can't stop %s service through sysv", name)
+	}
+
+	if isServiceStopped(name) {
+		return nil
+	}
+
+	return fmt.Errorf("%s service still works after 15 sec", name)
+}
+
+// stopServiceBySystemd stop service by systemctl
+func stopServiceBySystemd(name string) error {
+	err := exec.Command("systemctl", "stop", name).Start()
+
+	if err != nil {
+		return fmt.Errorf("Can't stop %s service through systemd", name)
+	}
+
+	if isServiceStopped(name) {
+		return nil
+	}
+
+	return fmt.Errorf("%s service still works after 15 sec", name)
 }
 
 // createBastionMarker create file with info about bastion mode

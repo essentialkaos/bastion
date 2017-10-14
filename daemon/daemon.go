@@ -111,7 +111,6 @@ func Init() {
 	registerSignalHandlers()
 	setupLogger()
 	createPidFile()
-	generateKey()
 
 	startHTTPServer(
 		knf.GetS(SERVER_IP),
@@ -220,8 +219,8 @@ func createPidFile() {
 	}
 }
 
-// generateKey generate and print random key
-func generateKey() {
+// generateSecrets generate key, link and trigger path
+func generateSecrets() string {
 	key = passwd.GenPassword(32, passwd.STRENGTH_MEDIUM)
 
 	var link string
@@ -251,7 +250,7 @@ func generateKey() {
 	bastionPath += "/" + key
 	bastionPath = strings.Replace(bastionPath, "//", "/", -1)
 
-	fmtc.Printf("{*}Your unique link is:{!} %s\n", key)
+	return link
 }
 
 // INT signal handler
