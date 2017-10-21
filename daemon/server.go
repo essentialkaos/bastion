@@ -26,7 +26,7 @@ func startHTTPServer(ip, port string) error {
 
 	addr := ip + ":" + port
 
-	log.Aux("Bastion HTTP server is started", addr)
+	log.Aux("Bastion %s HTTP server is started on %s", VER, addr)
 
 	return fasthttp.ListenAndServe(addr, fastHTTPHandler)
 }

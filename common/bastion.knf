@@ -8,7 +8,7 @@
   # If defined, used for unique link generation
   url:
 
-  # If defined, will added to generated url
+  # If defined, will be added as part of generated url
   path:
 
 [server]
@@ -17,10 +17,10 @@
   ip:
 
   # HTTP server port
-  port:
+  port: 17491
 
-  # Override server name
-  name:
+  # Name of server
+  name: nginx
 
 [log]
 

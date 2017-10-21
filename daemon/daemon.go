@@ -10,7 +10,6 @@ package daemon
 import (
 	"os"
 	"runtime"
-	"strings"
 
 	"pkg.re/essentialkaos/ek.v9/fmtc"
 	"pkg.re/essentialkaos/ek.v9/fsutil"
@@ -28,7 +27,7 @@ import (
 
 const (
 	APP  = "Bastion"
-	VER  = "1.0.0"
+	VER  = "0.0.1"
 	DESC = "Utility for temporary access limitation to server"
 )
 
@@ -112,10 +111,14 @@ func Init() {
 	setupLogger()
 	createPidFile()
 
-	startHTTPServer(
-		knf.GetS(SERVER_IP),
-		knf.GetS(SERVER_PORT),
-	)
+	if isBastionModeEnabled() {
+		restoreBastionMode()
+	} else {
+		startHTTPServer(
+			knf.GetS(SERVER_IP),
+			knf.GetS(SERVER_PORT),
+		)
+	}
 
 	shutdown(0)
 }
@@ -133,7 +136,7 @@ func loadConfig() {
 func validateConfig() {
 	var permsChecker = func(config *knf.Config, prop string, value interface{}) error {
 		// Ignore empty properties
-		if config.HasProp(prop) {
+		if !config.HasProp(prop) {
 			return nil
 		}
 
@@ -228,14 +231,14 @@ func generateSecrets() string {
 	if knf.GetS(MAIN_URL) != "" {
 		link = knf.GetS(MAIN_URL)
 	} else {
-		if options.GetS(SERVER_IP) == "" {
+		if knf.GetS(SERVER_IP) == "" {
 			link = "http://" + netutil.GetIP()
 		} else {
-			link = "http://" + options.GetS(SERVER_IP)
+			link = "http://" + knf.GetS(SERVER_IP)
 		}
 
-		if options.GetS(SERVER_PORT) != "" && options.GetS(SERVER_PORT) != "80" {
-			link += ":" + options.GetS(SERVER_PORT)
+		if knf.GetS(SERVER_PORT) != "" && knf.GetS(SERVER_PORT) != "80" {
+			link += ":" + knf.GetS(SERVER_PORT)
 		}
 	}
 
@@ -245,10 +248,7 @@ func generateSecrets() string {
 	}
 
 	link += "/" + key
-	link = strings.Replace(link, "//", "/", -1)
-
 	bastionPath += "/" + key
-	bastionPath = strings.Replace(bastionPath, "//", "/", -1)
 
 	return link
 }

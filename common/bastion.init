@@ -3,11 +3,11 @@
 ###############################################################################
 
 # bastion Startup script for bastion daemon
-
-# chkconfig: - 85 15
+#
+# chkconfig:   - 20 80
 # processname: bastion
-# config: /etc/bastion.knf
-# pidfile: /var/run/bastion.pid
+# config:      /etc/bastion.knf
+# pidfile:     /var/run/bastion.pid
 # description: Bastion Daemon
 
 ###############################################################################
@@ -30,12 +30,12 @@ kv.addHandler "start" "startServiceHandler"
 kv.addHandler "stop"  "stopServiceHandler"
 
 kv.addHandler "start"    "postStartServiceHandler" "post"
-kv.disableOutputRedirect "postStartServiceHandler" "post"
+kv.disableOutputRedirect "start" "post"
 
 ###############################################################################
 
 startServiceHandler() { 
-  kv.daemonize $binary -c $conf_file
+  kv.daemonize $binary -c $conf_file -nc
 
   [[ $? -ne $ACTION_OK ]] && return $ACTION_ERROR
 
@@ -47,14 +47,25 @@ startServiceHandler() {
 }
 
 postStartServiceHandler() {
+  if ! kv.hasLock ; then
+    return
+  fi
+
   local ip port url
 
   ip=$(kv.readProperty "${conf_file}" "ip" ":")
   port=$(kv.readProperty "${conf_file}" "port" ":")
 
-  url=$(curl "http://${ip:-127.0.0.1}:${port:-80}/go")
+  url=$(curl -s "http://${ip:-127.0.0.1}:${port:-80}/go" 2>/dev/null)
+
+  if [[ -z "$url" ]] ; then
+    kv.error "Can't get unique bastion link. Try to restart service."
+    return $ACTION_ERROR
+  fi
 
   kv.show "\nYour unique bastion link is: $url\n" $CYAN
+
+  return $ACTION_OK
 }
 
 stopServiceHandler() {
@@ -76,26 +87,3 @@ stopServiceHandler() {
 ###############################################################################
 
 kv.go $@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

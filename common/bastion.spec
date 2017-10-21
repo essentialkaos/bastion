@@ -48,7 +48,7 @@
 
 Summary:         Utility for temporary access limitation to server
 Name:            bastion
-Version:         1.0.0
+Version:         0.0.1
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -114,5 +114,5 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
-* Sat Oct 14 2017 Anton Novojilov <andy@essentialkaos.com> - 1.0.0-0
+* Sat Oct 14 2017 Anton Novojilov <andy@essentialkaos.com> - 0.0.1-0
 - Initial public release

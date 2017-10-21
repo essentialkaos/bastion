@@ -18,7 +18,7 @@ import (
 	"pkg.re/essentialkaos/ek.v9/jsonutil"
 	"pkg.re/essentialkaos/ek.v9/knf"
 	"pkg.re/essentialkaos/ek.v9/log"
-	"pkg.re/essentialkaos/ek.v9/pluralize"
+	"pkg.re/essentialkaos/ek.v9/timeutil"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -43,25 +43,72 @@ var (
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func startBastionMode() {
-	duration := knf.GetI64(MAIN_DURATION, 86400)
+	// duration := knf.GetI64(MAIN_DURATION, 86400)
+	duration := int64(120)
 
 	enableBastionMode(duration)
+	waitInBastionMode()
+}
 
-	until := time.Now().Unix() + duration
-	count := 0
+// restoreBastionMode restore bastion mode after reboot
+func restoreBastionMode() {
+	var err error
+
+	log.Info("Found bastion marker, restoring bastion mode...")
+
+	bastionMode = true
+	bastionMarker, err = getBastionMarkerInfo()
+
+	if err != nil {
+		log.Crit("Can't restore bastion mode: %v", err)
+		shutdown(1)
+	}
+
+	if isServiceWorks("sshd") {
+		log.Info("Stopping sshd service...")
+
+		stopService("sshd")
+
+		if err != nil {
+			log.Error(err.Error())
+		} else {
+			log.Info("sshd service disabled")
+		}
+	}
+
+	waitInBastionMode()
+}
+
+// waitInBastionMode wait until exit from bastion mode
+func waitInBastionMode() {
+	var count int
+
+	log.Info(
+		"Server will be in bastion mode till %s",
+		timeutil.Format(time.Unix(bastionMarker.Until, 0), "%Y/%m/%d %H:%M"),
+	)
 
 	for {
 		time.Sleep(time.Minute)
+
+		now := time.Now().Unix()
+
+		if now > bastionMarker.Until {
+			break
+		}
+
 		count++
 
-		if count == 15 {
-			hoursTillExit := int((until - time.Now().Unix()) / 3600)
-			log.Info(
-				"%s till exit from bastion mode",
-				pluralize.Pluralize(hoursTillExit, "hour", "hours"),
-			)
-			count = 0
+		if count%15 != 0 {
+			continue
 		}
+
+		tillExit := bastionMarker.Until - now
+
+		log.Info(
+			"%s till exit from bastion mode",
+			timeutil.PrettyDuration(tillExit),
+		)
 	}
 
 	disableBastionMode()
@@ -213,7 +260,7 @@ func stopService(name string) error {
 
 // enableServiceBySysV enable service autostart by chkconfig
 func enableServiceBySysV(name string) error {
-	err := exec.Command("chkconfig", "--add", name).Start()
+	err := exec.Command("chkconfig", name, "on").Start()
 
 	if err != nil {
 		return fmt.Errorf("Can't enable %s service through sysv", name)
@@ -247,7 +294,7 @@ func enableServiceBySystemd(name string) error {
 
 // disableServiceBySysV disable service autostart by chkconfig
 func disableServiceBySysV(name string) error {
-	err := exec.Command("chkconfig", "--del", name).Start()
+	err := exec.Command("chkconfig", name, "off").Start()
 
 	if err != nil {
 		return fmt.Errorf("Can't disable %s service through sysv", name)
@@ -346,9 +393,10 @@ func createBastionMarker(duration int64) error {
 	}
 
 	now := time.Now().Unix()
-	marker := BastionMarker{now, now + duration}
 
-	err := jsonutil.EncodeToFile(BASTION_MARKER, marker, 0600)
+	bastionMarker = &BastionMarker{now, now + duration}
+
+	err := jsonutil.EncodeToFile(BASTION_MARKER, bastionMarker, 0600)
 
 	if err != nil {
 		return fmt.Errorf("Can't encode bastion marker: %v", err)
