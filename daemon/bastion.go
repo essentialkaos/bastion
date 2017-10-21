@@ -43,8 +43,7 @@ var (
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func startBastionMode() {
-	// duration := knf.GetI64(MAIN_DURATION, 86400)
-	duration := int64(120)
+	duration := knf.GetI64(MAIN_DURATION, 86400)
 
 	enableBastionMode(duration)
 	waitInBastionMode()
@@ -79,7 +78,7 @@ func restoreBastionMode() {
 	waitInBastionMode()
 }
 
-// waitInBastionMode wait until exit from bastion mode
+// waitInBastionMode wait until end of bastion mode
 func waitInBastionMode() {
 	var count int
 
