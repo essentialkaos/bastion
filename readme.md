@@ -1,3 +1,5 @@
+<p align="center"><a href="#installation">Installation</a> • <a href="#from-essential-kaos-public-repo-for-rhel6centos6">From ESSENTIAL KAOS Public repo for RHEL6/CentOS6</a> • <a href="#from-essential-kaos-public-repo-for-rhel7centos7">From ESSENTIAL KAOS Public repo for RHEL7/CentOS7</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+
 <p align="center">
   <a href="https://travis-ci.org/essentialkaos/bastion"><img src="https://travis-ci.org/essentialkaos/bastion.svg?branch=master" alt="TravisCI"></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/bastion"><img src="https://goreportcard.com/badge/github.com/essentialkaos/bastion" alt="GoReportCard"></a>
