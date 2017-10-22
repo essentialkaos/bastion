@@ -222,37 +222,6 @@ func createPidFile() {
 	}
 }
 
-// generateSecrets generate key, link and trigger path
-func generateSecrets() string {
-	key = passwd.GenPassword(32, passwd.STRENGTH_MEDIUM)
-
-	var link string
-
-	if knf.GetS(MAIN_URL) != "" {
-		link = knf.GetS(MAIN_URL)
-	} else {
-		if knf.GetS(SERVER_IP) == "" {
-			link = "http://" + netutil.GetIP()
-		} else {
-			link = "http://" + knf.GetS(SERVER_IP)
-		}
-
-		if knf.GetS(SERVER_PORT) != "" && knf.GetS(SERVER_PORT) != "80" {
-			link += ":" + knf.GetS(SERVER_PORT)
-		}
-	}
-
-	if knf.GetS(MAIN_PATH) != "" {
-		link += "/" + knf.GetS(MAIN_PATH)
-		bastionPath = "/" + knf.GetS(MAIN_PATH)
-	}
-
-	link += "/" + key
-	bastionPath += "/" + key
-
-	return link
-}
-
 // INT signal handler
 func intSignalHandler() {
 	log.Aux("Received INT signal, shutdown...")

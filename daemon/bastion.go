@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"pkg.re/essentialkaos/ek.v9/fsutil"
@@ -506,4 +507,43 @@ func isServiceStopped(name string) bool {
 	}
 
 	return false
+}
+
+// generateSecrets generate key, link and trigger path
+func generateSecrets() string {
+	key = passwd.GenPassword(32, passwd.STRENGTH_MEDIUM)
+
+	var link string
+
+	if knf.GetS(MAIN_URL) != "" {
+		link = knf.GetS(MAIN_URL)
+	} else {
+		ip := knf.GetS(SERVER_IP)
+
+		if knf.GetS(SERVER_IP) == "" {
+			link = "http://" + netutil.GetIP()
+		} else {
+			link = "http://" + knf.GetS(SERVER_IP)
+		}
+
+		port := knf.GetS(SERVER_PORT)
+
+		if port != "" && port != "80" {
+			link += ":" + port
+		}
+	}
+
+	if knf.GetS(MAIN_PATH) != "" {
+		path := knf.GetS(MAIN_PATH)
+		path = strings.TrimLeft(path, "/")
+		path = strings.TrimRight(path, "/")
+
+		link += "/" + path
+		bastionPath = "/" + path
+	}
+
+	link += "/" + key
+	bastionPath += "/" + key
+
+	return link
 }

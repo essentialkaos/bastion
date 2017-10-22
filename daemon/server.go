@@ -16,19 +16,18 @@ import (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-var serverName string
-
-// ////////////////////////////////////////////////////////////////////////////////// //
-
 // startHTTPServer start HTTP server
 func startHTTPServer(ip, port string) error {
-	serverName = knf.GetS(SERVER_NAME, APP+"/"+VER)
-
 	addr := ip + ":" + port
 
-	log.Aux("Bastion %s HTTP server is started on %s", VER, addr)
+	log.Aux("%s %s HTTP server is started on %s", APP, VER, addr)
 
-	return fasthttp.ListenAndServe(addr, fastHTTPHandler)
+	server := fasthttp.Server{
+		Handler: fastHTTPHandler,
+		Name:    knf.GetS(SERVER_NAME, APP+"/"+VER),
+	}
+
+	return server.ListenAndServe(addr)
 }
 
 // fastHTTPHandler handler for fast http requests
@@ -65,6 +64,6 @@ func requestRecover(ctx *fasthttp.RequestCtx) {
 
 // writeBasicInfo add basic info to response
 func writeBasicInfo(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set("Server", serverName)
+	ctx.Response.Header.Set("Content-Type", "text/html; charset=UTF-8")
 	ctx.SetStatusCode(200)
 }
