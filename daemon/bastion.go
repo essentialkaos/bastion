@@ -19,6 +19,8 @@ import (
 	"pkg.re/essentialkaos/ek.v9/jsonutil"
 	"pkg.re/essentialkaos/ek.v9/knf"
 	"pkg.re/essentialkaos/ek.v9/log"
+	"pkg.re/essentialkaos/ek.v9/netutil"
+	"pkg.re/essentialkaos/ek.v9/passwd"
 	"pkg.re/essentialkaos/ek.v9/timeutil"
 )
 
@@ -520,10 +522,10 @@ func generateSecrets() string {
 	} else {
 		ip := knf.GetS(SERVER_IP)
 
-		if knf.GetS(SERVER_IP) == "" {
+		if ip == "" {
 			link = "http://" + netutil.GetIP()
 		} else {
-			link = "http://" + knf.GetS(SERVER_IP)
+			link = "http://" + ip
 		}
 
 		port := knf.GetS(SERVER_PORT)
