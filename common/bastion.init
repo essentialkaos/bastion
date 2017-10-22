@@ -1,0 +1,89 @@
+#!/bin/bash
+
+###############################################################################
+
+# bastion Startup script for bastion daemon
+#
+# chkconfig:   - 20 80
+# processname: bastion
+# config:      /etc/bastion.knf
+# pidfile:     /var/run/bastion.pid
+# description: Bastion Daemon
+
+###############################################################################
+
+source /etc/init.d/kaosv
+
+###############################################################################
+
+kv[prog_name]="bastion"
+
+binary="/usr/bin/bastion"
+conf_file="/etc/bastion.knf"
+
+kv[search_pattern]="bastion -c"
+kv[log]="/var/log/bastion/startup.log"
+
+###############################################################################
+
+kv.addHandler "start" "startServiceHandler"
+kv.addHandler "stop"  "stopServiceHandler"
+
+kv.addHandler "start"    "postStartServiceHandler" "post"
+kv.disableOutputRedirect "start" "post"
+
+###############################################################################
+
+startServiceHandler() { 
+  kv.daemonize $binary -c $conf_file -nc
+
+  [[ $? -ne $ACTION_OK ]] && return $ACTION_ERROR
+
+  sleep 1
+
+  kv.getStartStatus
+
+  return $?
+}
+
+postStartServiceHandler() {
+  if ! kv.hasLock ; then
+    return
+  fi
+
+  local ip port url
+
+  ip=$(kv.readProperty "${conf_file}" "ip" ":")
+  port=$(kv.readProperty "${conf_file}" "port" ":")
+
+  url=$(curl -s "http://${ip:-127.0.0.1}:${port:-80}/go" 2>/dev/null)
+
+  if [[ -z "$url" ]] ; then
+    kv.error "Can't get unique bastion link. Try to restart service."
+    return $ACTION_ERROR
+  fi
+
+  kv.show "\nYour unique bastion link is: $url\n" $CYAN
+
+  return $ACTION_OK
+}
+
+stopServiceHandler() {
+  local pid=$(kv.getPid)
+
+  kv.sendSignal "$SIGNAL_TERM"
+
+  if kv.getStopStatus ; then
+    return $ACTION_OK
+  else
+    if [[ -n "$1" ]] ; then
+      kv.killProcess "$pid"
+    fi
+
+    return $ACTION_ERROR
+  fi
+}
+
+###############################################################################
+
+kv.go $@
