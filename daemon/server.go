@@ -38,7 +38,7 @@ func fastHTTPHandler(ctx *fasthttp.RequestCtx) {
 
 	writeBasicInfo(ctx)
 
-	if key == "" {
+	if key == "" && !bastionMode {
 		if path == "/go" {
 			ctx.WriteString(generateSecrets())
 		}
