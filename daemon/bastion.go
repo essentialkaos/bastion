@@ -128,6 +128,8 @@ func enableBastionMode(duration int64) {
 		runScript(knf.GetS(SCRIPT_BEFORE))
 	}
 
+	log.Info("[IMPORTANT] Enabling bastion mode...")
+
 	err := createBastionMarker(duration)
 
 	if err != nil {
@@ -174,6 +176,8 @@ func disableBastionMode() {
 	if knf.HasProp(SCRIPT_OUT) {
 		runScript(knf.GetS(SCRIPT_OUT))
 	}
+
+	log.Info("[IMPORTANT] Disabling bastion mode...")
 
 	err := removeBastionMarker()
 
@@ -262,13 +266,19 @@ func enableServiceBySysV(name string) error {
 	err := exec.Command("chkconfig", name, "on").Start()
 
 	if err != nil {
-		return fmt.Errorf("Can't enable %s service through sysv", name)
+		return fmt.Errorf("Can't enable %s service through sysv (chkconfig return error)", name)
 	}
+
+	time.Sleep(time.Second)
 
 	enabled, err := initsystem.IsEnabled(name)
 
-	if err != nil || enabled {
-		return fmt.Errorf("Can't enable %s service through sysv", name)
+	if err != nil {
+		return fmt.Errorf("Can't enable %s service through sysv (can't get service state)", name)
+	}
+
+	if !enabled {
+		return fmt.Errorf("Can't enable %s service through sysv (service still disabled)", name)
 	}
 
 	return nil
@@ -279,13 +289,19 @@ func enableServiceBySystemd(name string) error {
 	err := exec.Command("systemctl", "enable", name).Start()
 
 	if err != nil {
-		return fmt.Errorf("Can't enable %s service through systemd", name)
+		return fmt.Errorf("Can't enable %s service through systemd (systemd return error)", name)
 	}
+
+	time.Sleep(time.Second)
 
 	enabled, err := initsystem.IsEnabled(name)
 
-	if err != nil || !enabled {
-		return fmt.Errorf("Can't enable %s service through systemd", name)
+	if err != nil {
+		return fmt.Errorf("Can't enable %s service through systemd (can't get service state)", name)
+	}
+
+	if !enabled {
+		return fmt.Errorf("Can't enable %s service through systemd (service still disabled)", name)
 	}
 
 	return nil
@@ -296,8 +312,10 @@ func disableServiceBySysV(name string) error {
 	err := exec.Command("chkconfig", name, "off").Start()
 
 	if err != nil {
-		return fmt.Errorf("Can't disable %s service through sysv", name)
+		return fmt.Errorf("Can't disable %s service through sysv (chkconfig return error)", name)
 	}
+
+	time.Sleep(time.Second)
 
 	enabled, err := initsystem.IsEnabled(name)
 
@@ -313,8 +331,10 @@ func disableServiceBySystemd(name string) error {
 	err := exec.Command("systemctl", "disable", name).Start()
 
 	if err != nil {
-		return fmt.Errorf("Can't disable %s service through systemd", name)
+		return fmt.Errorf("Can't disable %s service through systemd (systemd return error)", name)
 	}
+
+	time.Sleep(time.Second)
 
 	enabled, err := initsystem.IsEnabled(name)
 
@@ -333,6 +353,8 @@ func startServiceBySysV(name string) error {
 		return fmt.Errorf("Can't stop %s service through sysv", name)
 	}
 
+	time.Sleep(time.Second)
+
 	if isServiceWorks(name) {
 		return nil
 	}
@@ -347,6 +369,8 @@ func startServiceBySystemd(name string) error {
 	if err != nil {
 		return fmt.Errorf("Can't start %s service through systemd", name)
 	}
+
+	time.Sleep(time.Second)
 
 	if isServiceWorks(name) {
 		return nil
@@ -363,6 +387,8 @@ func stopServiceBySysV(name string) error {
 		return fmt.Errorf("Can't stop %s service through sysv", name)
 	}
 
+	time.Sleep(time.Second)
+
 	if isServiceStopped(name) {
 		return nil
 	}
@@ -377,6 +403,8 @@ func stopServiceBySystemd(name string) error {
 	if err != nil {
 		return fmt.Errorf("Can't stop %s service through systemd", name)
 	}
+
+	time.Sleep(time.Second)
 
 	if isServiceStopped(name) {
 		return nil
