@@ -17,6 +17,8 @@ bastion:
 deps:
 	git config --global http.https://pkg.re.followRedirects true
 	go get -d -v github.com/valyala/fasthttp
+	go get -d -v golang.org/x/crypto/bcrypt
+	go get -d -v golang.org/x/crypto/blowfish
 	go get -d -v pkg.re/essentialkaos/ek.v9
 
 fmt:
