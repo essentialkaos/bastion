@@ -1,9 +1,10 @@
 <p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/essentialkaos/bastion"><img src="https://travis-ci.org/essentialkaos/bastion.svg?branch=master" alt="TravisCI"></a>
-  <a href="https://goreportcard.com/report/github.com/essentialkaos/bastion"><img src="https://goreportcard.com/badge/github.com/essentialkaos/bastion" alt="GoReportCard"></a>
-  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.io/ekol.svg" alt="License"></a>
+  <a href="https://travis-ci.org/essentialkaos/bastion"><img src="https://travis-ci.org/essentialkaos/bastion.svg?branch=master" alt="TravisCI" /></a>
+  <a href="https://goreportcard.com/report/github.com/essentialkaos/bastion"><img src="https://goreportcard.com/badge/github.com/essentialkaos/bastion" alt="GoReportCard" /></a>
+  <a href="https://codebeat.co/projects/github-com-essentialkaos-bastion-master"><img alt="codebeat badge" src="https://codebeat.co/badges/a35d2d0c-7416-4287-84bb-a6919d894271" /></a>
+  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.io/ekol.svg" alt="License" /></a>
 </p>
 
 <p align="center"><a href="#readme"><img src="https://gh.kaos.io/bastion.svg"/></a></p>
