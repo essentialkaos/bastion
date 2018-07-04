@@ -1,3 +1,5 @@
+<p align="center"><a href="#readme"><img src="https://gh.kaos.st/bastion.svg"/></a></p>
+
 <p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
 <p align="center">
@@ -6,8 +8,6 @@
   <a href="https://codebeat.co/projects/github-com-essentialkaos-bastion-master"><img alt="codebeat badge" src="https://codebeat.co/badges/a35d2d0c-7416-4287-84bb-a6919d894271" /></a>
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg" alt="License" /></a>
 </p>
-
-<p align="center"><a href="#readme"><img src="https://gh.kaos.st/bastion.svg"/></a></p>
 
 **Bastion** is utility for temporary access limitation to server.
 
