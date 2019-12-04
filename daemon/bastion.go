@@ -2,7 +2,7 @@ package daemon
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2018 ESSENTIAL KAOS                         //
+//                     Copyright (c) 2009-2019 ESSENTIAL KAOS                         //
 //        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -14,14 +14,14 @@ import (
 	"strings"
 	"time"
 
-	"pkg.re/essentialkaos/ek.v9/fsutil"
-	"pkg.re/essentialkaos/ek.v9/initsystem"
-	"pkg.re/essentialkaos/ek.v9/jsonutil"
-	"pkg.re/essentialkaos/ek.v9/knf"
-	"pkg.re/essentialkaos/ek.v9/log"
-	"pkg.re/essentialkaos/ek.v9/netutil"
-	"pkg.re/essentialkaos/ek.v9/passwd"
-	"pkg.re/essentialkaos/ek.v9/timeutil"
+	"pkg.re/essentialkaos/ek.v11/fsutil"
+	"pkg.re/essentialkaos/ek.v11/initsystem"
+	"pkg.re/essentialkaos/ek.v11/jsonutil"
+	"pkg.re/essentialkaos/ek.v11/knf"
+	"pkg.re/essentialkaos/ek.v11/log"
+	"pkg.re/essentialkaos/ek.v11/netutil"
+	"pkg.re/essentialkaos/ek.v11/passwd"
+	"pkg.re/essentialkaos/ek.v11/timeutil"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -90,9 +90,7 @@ func waitInBastionMode() {
 		timeutil.Format(time.Unix(bastionMarker.Until, 0), "%Y/%m/%d %H:%M"),
 	)
 
-	for {
-		time.Sleep(time.Minute)
-
+	for range time.NewTicker(time.Minute).C {
 		now := time.Now().Unix()
 
 		if now > bastionMarker.Until {
@@ -426,7 +424,7 @@ func createBastionMarker(duration int64) error {
 
 	bastionMarker = &BastionMarker{now, now + duration}
 
-	err := jsonutil.EncodeToFile(BASTION_MARKER, bastionMarker, 0600)
+	err := jsonutil.Write(BASTION_MARKER, bastionMarker, 0600)
 
 	if err != nil {
 		return fmt.Errorf("Can't encode bastion marker: %v", err)
@@ -454,7 +452,7 @@ func removeBastionMarker() error {
 func getBastionMarkerInfo() (*BastionMarker, error) {
 	marker := &BastionMarker{}
 
-	err := jsonutil.DecodeFile(BASTION_MARKER, marker)
+	err := jsonutil.Read(BASTION_MARKER, marker)
 
 	if err != nil {
 		return nil, err
@@ -484,7 +482,7 @@ func runScript(script string) {
 // isServiceWorks return true if service works
 func isServiceWorks(name string) bool {
 	for i := 0; i < 15; i++ {
-		works, err := initsystem.IsServiceWorks(name)
+		works, err := initsystem.IsWorks(name)
 
 		if err == nil && works {
 			return true
@@ -499,7 +497,7 @@ func isServiceWorks(name string) bool {
 // isServiceStopped return true if service stopped
 func isServiceStopped(name string) bool {
 	for i := 0; i < 15; i++ {
-		works, err := initsystem.IsServiceWorks(name)
+		works, err := initsystem.IsWorks(name)
 
 		if err == nil && !works {
 			return true
