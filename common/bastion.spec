@@ -78,7 +78,7 @@ Utility for temporary access limitation to server.
 export GOPATH=$(pwd)
 
 pushd %{srcdir}
-  %{__make} %{?_smp_mflags}
+  %{__make} %{?_smp_mflags} all
 popd
 
 %install
