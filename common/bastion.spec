@@ -48,19 +48,19 @@
 
 Summary:         Utility for temporary access limitation to server
 Name:            bastion
-Version:         0.0.1
+Version:         0.0.2
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
 URL:             https://github.com/essentialkaos/bastion
 
-Source0:         https://source.kaos.io/%{name}/%{name}-%{version}.tar.bz2
+Source0:         https://source.kaos.st/%{name}/%{name}-%{version}.tar.bz2
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:   golang >= 1.7
+BuildRequires:   golang >= 1.10
 
-Requires:        kaosv >= 2.13
+Requires:        kaosv >= 2.15
 
 Provides:        %{name} = %{version}-%{release}
 
@@ -78,7 +78,7 @@ Utility for temporary access limitation to server.
 export GOPATH=$(pwd)
 
 pushd %{srcdir}
-  %{__make} %{?_smp_mflags}
+  %{__make} %{?_smp_mflags} all
 popd
 
 %install
@@ -114,5 +114,8 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Dec 04 2019 Anton Novojilov <andy@essentialkaos.com> - 0.0.2-0
+- ek updated to the latest stable release
+
 * Sat Oct 14 2017 Anton Novojilov <andy@essentialkaos.com> - 0.0.1-0
 - Initial public release

@@ -2,7 +2,7 @@ package daemon
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2018 ESSENTIAL KAOS                         //
+//                     Copyright (c) 2009-2019 ESSENTIAL KAOS                         //
 //        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -11,21 +11,23 @@ import (
 	"os"
 	"runtime"
 
-	"pkg.re/essentialkaos/ek.v9/fmtc"
-	"pkg.re/essentialkaos/ek.v9/fsutil"
-	"pkg.re/essentialkaos/ek.v9/knf"
-	"pkg.re/essentialkaos/ek.v9/log"
-	"pkg.re/essentialkaos/ek.v9/options"
-	"pkg.re/essentialkaos/ek.v9/pid"
-	"pkg.re/essentialkaos/ek.v9/signal"
-	"pkg.re/essentialkaos/ek.v9/usage"
+	"pkg.re/essentialkaos/ek.v11/fmtc"
+	"pkg.re/essentialkaos/ek.v11/knf"
+	"pkg.re/essentialkaos/ek.v11/log"
+	"pkg.re/essentialkaos/ek.v11/options"
+	"pkg.re/essentialkaos/ek.v11/pid"
+	"pkg.re/essentialkaos/ek.v11/signal"
+	"pkg.re/essentialkaos/ek.v11/usage"
+
+	knfv "pkg.re/essentialkaos/ek.v11/knf/validators"
+	knff "pkg.re/essentialkaos/ek.v11/knf/validators/fs"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "Bastion"
-	VER  = "0.0.1"
+	VER  = "0.0.2"
 	DESC = "Utility for temporary access limitation to server"
 )
 
@@ -132,48 +134,26 @@ func loadConfig() {
 
 // validateConfig validate configuration file values
 func validateConfig() {
-	var permsChecker = func(config *knf.Config, prop string, value interface{}) error {
-		// Ignore empty properties
-		if !config.HasProp(prop) {
-			return nil
-		}
-
-		if !fsutil.CheckPerms(value.(string), config.GetS(prop)) {
-			switch value.(string) {
-			case "DW":
-				return fmtc.Errorf("Property %s must be path to writable directory", prop)
-			case "DX":
-				return fmtc.Errorf("Property %s must be path to executable directory", prop)
-			case "FS":
-				return fmtc.Errorf("Property %s must be path to non-empty file", prop)
-			case "FX":
-				return fmtc.Errorf("Property %s must be path to executable file", prop)
-			}
-		}
-
-		return nil
-	}
-
 	errs := knf.Validate([]*knf.Validator{
-		{SERVER_PORT, knf.Empty, nil},
-		{LOG_DIR, knf.Empty, nil},
-		{LOG_FILE, knf.Empty, nil},
+		{SERVER_PORT, knfv.Empty, nil},
+		{LOG_DIR, knfv.Empty, nil},
+		{LOG_FILE, knfv.Empty, nil},
 
-		{LOG_DIR, permsChecker, "DW"},
-		{LOG_DIR, permsChecker, "DX"},
-		{LOG_LEVEL, knf.NotContains, []string{"debug", "info", "warn", "error", "crit"}},
+		{LOG_DIR, knff.Perms, "DW"},
+		{LOG_DIR, knff.Perms, "DX"},
+		{LOG_LEVEL, knfv.NotContains, []string{"debug", "info", "warn", "error", "crit"}},
 
-		{MAIN_DURATION, knf.Less, 3600},
-		{MAIN_DURATION, knf.Greater, 604800},
+		{MAIN_DURATION, knfv.Less, 3600},
+		{MAIN_DURATION, knfv.Greater, 604800},
 
-		{SCRIPT_BEFORE, permsChecker, "FS"},
-		{SCRIPT_BEFORE, permsChecker, "FX"},
-		{SCRIPT_IN, permsChecker, "FS"},
-		{SCRIPT_IN, permsChecker, "FX"},
-		{SCRIPT_OUT, permsChecker, "FS"},
-		{SCRIPT_OUT, permsChecker, "FX"},
-		{SCRIPT_END, permsChecker, "FS"},
-		{SCRIPT_END, permsChecker, "FX"},
+		{SCRIPT_BEFORE, knff.Perms, "FS"},
+		{SCRIPT_BEFORE, knff.Perms, "FX"},
+		{SCRIPT_IN, knff.Perms, "FS"},
+		{SCRIPT_IN, knff.Perms, "FX"},
+		{SCRIPT_OUT, knff.Perms, "FS"},
+		{SCRIPT_OUT, knff.Perms, "FX"},
+		{SCRIPT_END, knff.Perms, "FS"},
+		{SCRIPT_END, knff.Perms, "FX"},
 	})
 
 	if len(errs) != 0 {
