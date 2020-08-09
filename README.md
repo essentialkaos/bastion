@@ -6,7 +6,7 @@
   <a href="https://travis-ci.com/essentialkaos/bastion"><img src="https://travis-ci.com/essentialkaos/bastion.svg?branch=master" alt="TravisCI" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/bastion"><img src="https://goreportcard.com/badge/github.com/essentialkaos/bastion" alt="GoReportCard" /></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-bastion-master"><img alt="codebeat badge" src="https://codebeat.co/badges/a35d2d0c-7416-4287-84bb-a6919d894271" /></a>
-  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg" alt="License" /></a>
+  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
 **Bastion** is utility for temporary access limitation to server.
@@ -47,6 +47,6 @@ Before contributing to this project please read our [Contributing Guidelines](ht
 
 ### License
 
-[EKOL](https://essentialkaos.com/ekol)
+[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 <p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>
