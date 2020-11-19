@@ -3,7 +3,7 @@
 <p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
 <p align="center">
-  <a href="https://travis-ci.com/essentialkaos/bastion"><img src="https://travis-ci.com/essentialkaos/bastion.svg?branch=master" alt="TravisCI" /></a>
+  <a href="https://github.com/essentialkaos/bastion/actions"><img src="https://github.com/essentialkaos/bastion/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/bastion"><img src="https://goreportcard.com/badge/github.com/essentialkaos/bastion" alt="GoReportCard" /></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-bastion-master"><img alt="codebeat badge" src="https://codebeat.co/badges/a35d2d0c-7416-4287-84bb-a6919d894271" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
@@ -38,8 +38,8 @@
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![Build Status](https://travis-ci.com/essentialkaos/bastion.svg?branch=master)](https://travis-ci.com/essentialkaos/bastion) |
-| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/bastion.svg?branch=develop)](https://travis-ci.com/essentialkaos/bastion) |
+| `master` | [![CI](https://github.com/essentialkaos/bastion/workflows/CI/badge.svg?branch=master)](https://github.com/essentialkaos/bastion/actions) |
+| `develop` | [![CI](https://github.com/essentialkaos/bastion/workflows/CI/badge.svg?branch=develop)](https://github.com/essentialkaos/bastion/actions) |
 
 ### Contributing
 
