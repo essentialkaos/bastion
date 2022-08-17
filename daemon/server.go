@@ -8,8 +8,8 @@ package daemon
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
-	"pkg.re/essentialkaos/ek.v11/knf"
-	"pkg.re/essentialkaos/ek.v11/log"
+	"github.com/essentialkaos/ek/v12/knf"
+	"github.com/essentialkaos/ek/v12/log"
 
 	"github.com/valyala/fasthttp"
 )

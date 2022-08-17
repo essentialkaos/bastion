@@ -11,23 +11,23 @@ import (
 	"os"
 	"runtime"
 
-	"pkg.re/essentialkaos/ek.v11/fmtc"
-	"pkg.re/essentialkaos/ek.v11/knf"
-	"pkg.re/essentialkaos/ek.v11/log"
-	"pkg.re/essentialkaos/ek.v11/options"
-	"pkg.re/essentialkaos/ek.v11/pid"
-	"pkg.re/essentialkaos/ek.v11/signal"
-	"pkg.re/essentialkaos/ek.v11/usage"
+	"github.com/essentialkaos/ek/v12/fmtc"
+	"github.com/essentialkaos/ek/v12/knf"
+	"github.com/essentialkaos/ek/v12/log"
+	"github.com/essentialkaos/ek/v12/options"
+	"github.com/essentialkaos/ek/v12/pid"
+	"github.com/essentialkaos/ek/v12/signal"
+	"github.com/essentialkaos/ek/v12/usage"
 
-	knfv "pkg.re/essentialkaos/ek.v11/knf/validators"
-	knff "pkg.re/essentialkaos/ek.v11/knf/validators/fs"
+	knfv "github.com/essentialkaos/ek/v12/knf/validators"
+	knff "github.com/essentialkaos/ek/v12/knf/validators/fs"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "Bastion"
-	VER  = "0.0.2"
+	VER  = "0.0.3"
 	DESC = "Utility for temporary access limitation to server"
 )
 
