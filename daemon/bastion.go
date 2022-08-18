@@ -2,7 +2,7 @@ package daemon
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2020 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -14,14 +14,14 @@ import (
 	"strings"
 	"time"
 
-	"pkg.re/essentialkaos/ek.v11/fsutil"
-	"pkg.re/essentialkaos/ek.v11/initsystem"
-	"pkg.re/essentialkaos/ek.v11/jsonutil"
-	"pkg.re/essentialkaos/ek.v11/knf"
-	"pkg.re/essentialkaos/ek.v11/log"
-	"pkg.re/essentialkaos/ek.v11/netutil"
-	"pkg.re/essentialkaos/ek.v11/passwd"
-	"pkg.re/essentialkaos/ek.v11/timeutil"
+	"github.com/essentialkaos/ek/v12/fsutil"
+	"github.com/essentialkaos/ek/v12/initsystem"
+	"github.com/essentialkaos/ek/v12/jsonutil"
+	"github.com/essentialkaos/ek/v12/knf"
+	"github.com/essentialkaos/ek/v12/log"
+	"github.com/essentialkaos/ek/v12/netutil"
+	"github.com/essentialkaos/ek/v12/passwd"
+	"github.com/essentialkaos/ek/v12/timeutil"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
