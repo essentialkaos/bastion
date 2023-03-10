@@ -1,8 +1,8 @@
 github.com/andybalholm/brotli v1.0.4 h1:V7DdXeJtZscaqfNuAdSRuRFzuiKlHSC/Zh3zl9qY3JY=
 github.com/andybalholm/brotli v1.0.4/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
 github.com/essentialkaos/check v1.4.0 h1:kWdFxu9odCxUqo1NNFNJmguGrDHgwi3A8daXX1nkuKk=
-github.com/essentialkaos/ek/v12 v12.61.0 h1:8cmtVy/0FqUuWJVQNTnaeFxpQSiPWAxPc6j2EIUAEpA=
-github.com/essentialkaos/ek/v12 v12.61.0/go.mod h1:9MlSuHpewu7OZ9tM9dLFHvoA8dflBIUPCA0Ctt97wRs=
+github.com/essentialkaos/ek/v12 v12.62.0 h1:A+pnMGbSz2apjEjlHU3EQ6Uqam85GTryVPhzcLfY8o4=
+github.com/essentialkaos/ek/v12 v12.62.0/go.mod h1:9MlSuHpewu7OZ9tM9dLFHvoA8dflBIUPCA0Ctt97wRs=
 github.com/klauspost/compress v1.15.9 h1:wKRjX6JRtDdrE9qwa4b/Cip7ACOshUI4smpCQanqjSY=
 github.com/klauspost/compress v1.15.9/go.mod h1:PhcZ0MbTNciWF3rruxRgKxI5NkcHHrHUDtV4Yw2GlzU=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
