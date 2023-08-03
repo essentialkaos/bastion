@@ -3,7 +3,7 @@ module github.com/essentialkaos/bastion
 go 1.18
 
 require (
-	github.com/essentialkaos/ek/v12 v12.73.2
+	github.com/essentialkaos/ek/v12 v12.75.0
 	github.com/valyala/fasthttp v1.48.0
 )
 
